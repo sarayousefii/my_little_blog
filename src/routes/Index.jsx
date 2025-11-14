@@ -7,12 +7,19 @@ import EditBlogForm from '../components/EditBlogForm.jsx';
 import UserList from '../components/UserList.jsx';
 import User from '../components/User.jsx';
 
+const ErrorElement = () => (
+  <div className="text-center p-10">
+    <h3>چیزی پیدا نکردیم 😐 ...</h3>
+    <p>لطفا مسیر را بررسی کنید یا به صفحه اصلی بازگردید.</p>
+  </div>
+);
+
 export const router = createBrowserRouter(
   [
     {
       path: "/",
       element: <MainLayout />,
-      errorElement: (<h3 className='text-center'>چیزی پیدا نکردیم 😐 ... </h3>),
+      errorElement: <ErrorElement />,
       children: [
         {
           path: "/",
@@ -41,7 +48,6 @@ export const router = createBrowserRouter(
       ]
     }
   ],
-
   {
     basename: "/my_little_blog"
   }

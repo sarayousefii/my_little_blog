@@ -1,8 +1,10 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-
+console.log(import.meta.env.MODE)
 export const apiSlice = createApi({
     reducerPath: "api", 
-    baseQuery: fetchBaseQuery({ baseUrl: "http://localhost:9000" }),
+    baseQuery: fetchBaseQuery({ baseUrl: import.meta.env.MODE === "development"
+  ? "http://localhost:10000"
+  : "https://my-little-blog-api.onrender.com" }),
     tagTypes: ["BLOG","USER"],
     endpoints: (builder) => ({
         getBlogs: builder.query({

@@ -1,6 +1,8 @@
 import axios from "axios";
-
-const SERVER_URL="http://localhost:9000";
+console.log(import.meta.env.MODE)
+const SERVER_URL = import.meta.env.MODE === "development"
+  ? "http://localhost:10000"
+  : "https://my-little-blog-api.onrender.com";
 //-----------users url
 export const getAllUsers=()=>{
     const url=`${SERVER_URL}/users`;

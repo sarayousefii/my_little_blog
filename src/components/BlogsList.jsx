@@ -68,7 +68,11 @@ const BlogsList = () => {
     } else if (isSuccess) {
         content = sortedBlogs.map((blog) => <Blog key={blog.id} blog={blog} />);
     } else if (isError) {
-        content = <div>{error}</div>;
+        content = (
+            <div className="text-red-500 p-4">
+                خطا: {error?.message || "خطایی رخ داده است"}
+            </div>
+        );
     }
 
     return (
@@ -76,7 +80,7 @@ const BlogsList = () => {
             <div className="m-5 ">
                 <button
                     className="w-full rounded-lg text-white bg-[#403e3e] p-4 hover:bg-[#7b7878] focus:bg-gray-600 active:bg-gray-500 "
-                    style={{"text-shadow":"rgba(0, 0, 0, 0.5) 0px 2px 3px"}}
+                    style={{textShadow:"rgba(0, 0, 0, 0.5) 0px 2px 3px"}}
                     onClick={() => navigate("/blogs/create-blog")}
                 >
                     ساخت پست جدید
