@@ -1,12 +1,18 @@
-const Spinner = ({ text = "", size = "5em" }) => {
-    const header = text ? <h4>{text}</h4> : null;
-
-    return (
-        <div className="spinner">
-            {header}
-            <div className="loader" style={{ height: size, width: size }} />
-        </div>
-    );
+const Spinner = ({ size = "w-20 h-20", thickness = "border-4" }) => {
+  return (
+    <div className="flex items-center justify-center p-4">
+      <div
+        className={`${size} ${size} rounded-full ${thickness} animate-spin`}
+        style={{
+          borderStyle: "solid",
+          borderWidth: "0.35em",
+          borderColor: "transparent",
+          borderTopColor: "#6b7280", // نقره‌ای
+          borderRightColor: "#000000", // مشکی
+        }}
+      ></div>
+    </div>
+  );
 };
 
 export default Spinner;
