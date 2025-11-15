@@ -4,7 +4,7 @@ export const apiSlice = createApi({
     reducerPath: "api", 
     baseQuery: fetchBaseQuery({ baseUrl: import.meta.env.MODE === "development"
   ? "http://localhost:10000"
-  : "https://my-little-blog-api.onrender.com" }),
+  : "https://my-little-blog-api-3.onrender.com" }),
     tagTypes: ["BLOG","USER"],
     endpoints: (builder) => ({
         getBlogs: builder.query({

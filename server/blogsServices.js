@@ -2,7 +2,7 @@ import axios from "axios";
 console.log(import.meta.env.MODE)
 const SERVER_URL = import.meta.env.MODE === "development"
   ? "http://localhost:10000"
-  : "https://my-little-blog-api.onrender.com";
+  : "https://my-little-blog-api-3.onrender.com";
 //-----------users url
 export const getAllUsers=()=>{
     const url=`${SERVER_URL}/users`;
