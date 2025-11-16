@@ -9,30 +9,24 @@ import DEFAULT_IMAGE from "../assets/default_blog_image.jpg";
 const BlogCard = ({ blog, onDelete }) => {
   const [showConfirm, setShowConfirm] = useState(false);
 
-  const handleDeleteClick = () => {
-    setShowConfirm(true);
-  };
-
+  const handleDeleteClick = () => setShowConfirm(true);
   const handleConfirmDelete = () => {
     onDelete(blog.id);
     setShowConfirm(false);
   };
-
-  const handleCancelDelete = () => {
-    setShowConfirm(false);
-  };
+  const handleCancelDelete = () => setShowConfirm(false);
 
   return (
     <article className="group bg-white rounded-2xl shadow-md overflow-hidden m-4 transition-transform duration-300 hover:scale-[1.01] flex flex-col sm:flex-row relative">
-      {/* overlay hover */}
-      <div className="hidden sm:block absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300 z-10 rounded-2xl pointer-events-none"></div>
+      {/* overlay hover دسکتاپ */}
+      <div className="hidden sm:block absolute inset-0 bg-black/0 group-hover:bg-black/25 transition-all duration-500 z-10 rounded-2xl pointer-events-none"></div>
 
       {/* تصویر */}
       <div className="sm:w-1/3 overflow-hidden relative">
         <img
           src={blog.image || DEFAULT_IMAGE}
           alt={blog.title}
-          className="w-full h-48 sm:h-64 md:h-72 object-cover object-center transition-transform duration-300 group-hover:scale-105"
+          className="w-full h-48 sm:h-64 md:h-72 object-cover object-center transition-transform duration-500 group-hover:scale-105"
         />
       </div>
 
@@ -42,32 +36,41 @@ const BlogCard = ({ blog, onDelete }) => {
         <div className="flex flex-wrap items-center text-sm sm:text-base text-gray-500 gap-2">
           <ShowUser userId={blog.user} /> • <ShowTime timestamp={blog.date} />
         </div>
-        <p className="text-gray-700 line-clamp-3 sm:line-clamp-4 text-sm sm:text-base">{blog.content}</p>
+        <p className="text-gray-700 line-clamp-1 sm:line-clamp-3 text-sm sm:text-base">{blog.content}</p>
 
-        {/* دسکتاپ */}
-        <div className="hidden sm:flex absolute inset-0 items-center justify-center gap-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+        {/* دسکتاپ: ReactionButton همیشه ظاهر، بقیه دکمه‌ها staggered */}
+        <div className="hidden sm:flex justify-center items-center gap-3 mt-auto absolute bottom-4 left-1/2 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-20">
+          {/* ReactionButton بدون تغییر */}
           <ReactionButton blog={blog} />
-          <Link
-            to={`/blogs/${blog.id}`}
-            className="p-3 bg-gray-800 text-white rounded hover:bg-gray-700 transition-colors"
-            title="دیدن پست"
-          >
-            <MdRemoveRedEye size={22} />
-          </Link>
-          <Link
-            to={`/blogs/edit-blog/${blog.id}`}
-            className="p-3 bg-gray-800 text-white rounded hover:bg-gray-700 transition-colors"
-            title="ویرایش"
-          >
-            <MdEdit size={22} />
-          </Link>
-          <button
-            onClick={handleDeleteClick}
-            className="p-3 bg-red-600 text-white rounded hover:bg-red-700 transition-colors"
-            title="حذف"
-          >
-            <MdDelete size={22} />
-          </button>
+
+          {/* دکمه‌های دیگر staggered */}
+          <div className="transition-transform duration-300 delay-100 transform translate-y-4 group-hover:translate-y-0">
+            <Link
+              to={`/blogs/${blog.id}`}
+              className="p-3 bg-gray-800 text-white rounded hover:bg-gray-700 transition-transform duration-300 flex items-center justify-center"
+              title="دیدن پست"
+            >
+              <MdRemoveRedEye size={22} />
+            </Link>
+          </div>
+          <div className="transition-transform duration-300 delay-150 transform translate-y-4 group-hover:translate-y-0">
+            <Link
+              to={`/blogs/edit-blog/${blog.id}`}
+              className="p-3 bg-gray-800 text-white rounded hover:bg-gray-700 transition-transform duration-300 flex items-center justify-center"
+              title="ویرایش"
+            >
+              <MdEdit size={22} />
+            </Link>
+          </div>
+          <div className="transition-transform duration-300 delay-200 transform translate-y-4 group-hover:translate-y-0">
+            <button
+              onClick={handleDeleteClick}
+              className="p-3 bg-red-600 text-white rounded hover:bg-red-700 transition-transform duration-300 flex items-center justify-center"
+              title="حذف"
+            >
+              <MdDelete size={22} />
+            </button>
+          </div>
         </div>
 
         {/* موبایل */}
@@ -75,21 +78,21 @@ const BlogCard = ({ blog, onDelete }) => {
           <ReactionButton blog={blog} small />
           <Link
             to={`/blogs/${blog.id}`}
-            className="flex justify-center items-center p-1 bg-gray-800 text-white rounded hover:bg-gray-700 transition-colors"
+            className="flex justify-center items-center p-1 bg-gray-800 text-white rounded hover:bg-gray-700 transition-transform duration-300 transform hover:scale-110"
             title="دیدن پست"
           >
             <MdRemoveRedEye size={16} />
           </Link>
           <Link
             to={`/blogs/edit-blog/${blog.id}`}
-            className="flex justify-center items-center p-1 bg-gray-800 text-white rounded hover:bg-gray-700 transition-colors"
+            className="flex justify-center items-center p-1 bg-gray-800 text-white rounded hover:bg-gray-700 transition-transform duration-300 transform hover:scale-110"
             title="ویرایش"
           >
             <MdEdit size={16} />
           </Link>
           <button
             onClick={handleDeleteClick}
-            className="flex justify-center items-center p-1 bg-red-600 text-white rounded hover:bg-red-700 transition-colors"
+            className="flex justify-center items-center p-1 bg-red-600 text-white rounded hover:bg-red-700 transition-transform duration-300 transform hover:scale-110"
             title="حذف"
           >
             <MdDelete size={16} />
