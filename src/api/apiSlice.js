@@ -42,7 +42,40 @@ export const apiSlice = createApi({
                 method : "DELETE"
             }),
             invalidatesTags:["BLOG"]
-        })
+        }),
+        updateReaction: builder.mutation({
+            query: ({ blog }) => ({
+                url: `/blogs/${blog.id}`,
+                method: "PUT",
+                body: blog,
+            }),
+            async onQueryStarted({ blog }, { dispatch, queryFulfilled }) {
+                // optimistic update روی cache getBlogs
+                const patchResult = dispatch(
+                apiSlice.util.updateQueryData("getBlogs", undefined, (draft) => {
+                    const blogToUpdate = draft.find((b) => b.id === blog.id);
+                    if (blogToUpdate) {
+                    blogToUpdate.reactions = { ...blog.reactions };
+                    }
+                })
+                );
+
+                // optimistic update روی cache getBlog (صفحه جزئیات)
+                const patchDetail = dispatch(
+                apiSlice.util.updateQueryData("getBlog", blog.id, (draft) => {
+                    draft.reactions = { ...blog.reactions };
+                })
+                );
+
+                try {
+                await queryFulfilled;
+                } catch {
+                patchResult.undo();
+                patchDetail.undo();
+                }
+            },
+            invalidatesTags: (result, error, arg) => [{ type: "BLOG", id: arg.blog.id }],
+            }),
     }),
 });
 
@@ -52,5 +85,6 @@ export const {
     useGetBlogQuery,
     useAddNewBlogMutation,
     useEditBlogMutation,
-    useDeleteBlogMutation
+    useDeleteBlogMutation,
+    useUpdateReactionMutation,
 } = apiSlice;

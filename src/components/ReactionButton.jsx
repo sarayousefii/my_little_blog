@@ -1,27 +1,45 @@
-import { useDispatch } from "react-redux"
-import { blogReactions } from "../reducers/blogSlice";
-const reactions={
+import { useUpdateReactionMutation } from "../api/apiSlice";
+
+const ReactionButton = ({ blog, small }) => {
+  const [updateReaction] = useUpdateReactionMutation();
+
+  const reactions = {
     like: "👍",
     dislike: "👎",
-    heart:"❤",
-    hora:"🎉",
-    laugh:"🤣",
-    clap:"👏"
-}
+    heart: "❤",
+    hora: "🎉",
+    laugh: "🤣",
+    clap: "👏",
+  };
 
-const ReactionButton=({blog})=>{
+  const handleReaction = (reactionName) => {
+    const updatedBlog = {
+      ...blog,
+      reactions: {
+        ...blog.reactions,
+        [reactionName]: (blog.reactions[reactionName] || 0) + 1,
+      },
+    };
 
-    const dispatch=useDispatch();
+    updateReaction({ blog: updatedBlog });
+  };
 
-    const reactionButtons=Object.entries(reactions).map(([name,emoji])=>{
-        return(
-            <button key={name} type="button" className="muted-button reaction-button" onClick={()=>dispatch(blogReactions({blogId:blog.id,reaction:name}))}>
-                {emoji} {blog.reactions[name]}
-            </button>
-        )
-    })
-    return(
-        reactionButtons
-    )
-}
+  return (
+    <>
+      {Object.entries(reactions).map(([name, emoji]) => (
+        <button
+          key={name}
+          type="button"
+          className={`muted-button reaction-button ${
+            small ? "p-1 text-sm" : "p-2 text-base"
+          }`}
+          onClick={() => handleReaction(name)}
+        >
+          {emoji} {blog.reactions[name] || 0}
+        </button>
+      ))}
+    </>
+  );
+};
+
 export default ReactionButton;

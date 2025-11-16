@@ -4,52 +4,64 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { useAddNewBlogMutation } from "../api/apiSlice";
 import { selectAllUsers } from "../reducers/userSlice";
+import { useState, useEffect } from "react";
 import { nanoid } from "@reduxjs/toolkit";
+import BackButton from "./BackButton";
+
+const convertToBase64 = (file) =>
+  new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = (error) => reject(error);
+  });
 
 const CreateBlogForm = () => {
   const navigate = useNavigate();
   const users = useSelector(selectAllUsers);
   const [addNewBlog, { isLoading }] = useAddNewBlogMutation();
+  const [imageFile, setImageFile] = useState(null);
+  const [preview, setPreview] = useState(null); // ابتدا هیچ پیش‌نمایشی نیست
 
+  useEffect(() => {
+    if (imageFile) {
+      const objectUrl = URL.createObjectURL(imageFile);
+      setPreview(objectUrl);
+      return () => URL.revokeObjectURL(objectUrl);
+    } else {
+      setPreview(null); // وقتی فایلی انتخاب نشده است، پیش‌نمایش پاک شود
+    }
+  }, [imageFile]);
 
   const validationSchema = Yup.object({
     title: Yup.string().required("عنوان پست الزامی است"),
-    content: Yup.string()
-      .min(10, "محتوای پست باید حداقل ۱۰ کاراکتر باشد")
-      .required("محتوا الزامی است"),
+    content: Yup.string().min(10, "حداقل ۱۰ کاراکتر").required("محتوا الزامی است"),
     userId: Yup.string().required("انتخاب نویسنده الزامی است"),
   });
 
-
   const handleSubmit = async (values, { resetForm }) => {
-    try {
-      await addNewBlog({
-        id: nanoid(),
-        date: new Date().toISOString(),
-        title: values.title,
-        content: values.content,
-        user: values.userId,
-        reactions: {
-          thumbsUp: 0,
-          hooray: 0,
-          heart: 0,
-          rocket: 0,
-          eyes: 0,
-        },
-      }).unwrap();
+    const base64Image = imageFile ? await convertToBase64(imageFile) : null;
 
-      resetForm();
-      navigate("/");
-    } catch (error) {
-      console.error("❌ خطا در ذخیره پست:", error);
-    }
+    await addNewBlog({
+      id: nanoid(),
+      date: new Date().toISOString(),
+      title: values.title,
+      content: values.content,
+      user: values.userId,
+      image: base64Image,
+      reactions: { thumbsUp: 0, hooray: 0, heart: 0, rocket: 0, eyes: 0 },
+    }).unwrap();
+
+    resetForm();
+    setImageFile(null);
+    navigate("/");
   };
 
   return (
     <section className="max-w-2xl mx-auto mt-10 p-6 bg-white rounded-lg shadow-lg">
-      <h2 className="text-2xl font-bold text-center mb-6 text-gray-800">
-        📝 ساخت پست جدید
-      </h2>
+      <BackButton className="mb-4" />
+
+      <h2 className="text-2xl font-bold text-center mb-6 text-gray-800">📝 ساخت پست جدید</h2>
 
       <Formik
         initialValues={{ title: "", content: "", userId: "" }}
@@ -58,32 +70,23 @@ const CreateBlogForm = () => {
       >
         {({ isValid, dirty }) => (
           <Form className="space-y-5">
-
+            {/* عنوان */}
             <div>
-              <label htmlFor="title" className="block text-gray-700 mb-2">
-                عنوان پست :
-              </label>
+              <label className="block text-gray-700 mb-2">عنوان پست :</label>
               <Field
-                id="title"
                 name="title"
                 type="text"
                 className="w-full border rounded-md p-2 focus:ring focus:ring-blue-300"
                 placeholder="عنوان پست را وارد کنید..."
               />
-              <ErrorMessage
-                name="title"
-                component="div"
-                className="text-red-500 text-sm mt-1"
-              />
+              <ErrorMessage name="title" component="div" className="text-red-500 text-sm mt-1" />
             </div>
 
+            {/* نویسنده */}
             <div>
-              <label htmlFor="userId" className="block text-gray-700 mb-2">
-                نویسنده :
-              </label>
+              <label className="block text-gray-700 mb-2">نویسنده :</label>
               <Field
                 as="select"
-                id="userId"
                 name="userId"
                 className="w-full border rounded-md p-2 bg-white focus:ring focus:ring-blue-300"
               >
@@ -94,30 +97,38 @@ const CreateBlogForm = () => {
                   </option>
                 ))}
               </Field>
-              <ErrorMessage
-                name="userId"
-                component="div"
-                className="text-red-500 text-sm mt-1"
-              />
+              <ErrorMessage name="userId" component="div" className="text-red-500 text-sm mt-1" />
             </div>
 
+            {/* محتوا */}
             <div>
-              <label htmlFor="content" className="block text-gray-700 mb-2">
-                محتوای اصلی :
-              </label>
+              <label className="block text-gray-700 mb-2">محتوای اصلی :</label>
               <Field
                 as="textarea"
-                id="content"
                 name="content"
                 rows="6"
                 className="w-full border rounded-md p-2 focus:ring focus:ring-blue-300"
                 placeholder="متن پست را وارد کنید..."
               />
-              <ErrorMessage
-                name="content"
-                component="div"
-                className="text-red-500 text-sm mt-1"
+              <ErrorMessage name="content" component="div" className="text-red-500 text-sm mt-1" />
+            </div>
+
+            {/* عکس */}
+            <div>
+              <label className="block text-gray-700 mb-2">تصویر پست :</label>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={(e) => setImageFile(e.target.files[0])}
+                className="w-full border p-2 rounded-md bg-white"
               />
+              {imageFile && (
+                <img
+                  src={preview}
+                  alt="preview"
+                  className="w-full h-48 sm:h-64 md:h-80 object-cover mt-3 rounded"
+                />
+              )}
             </div>
 
             <button
