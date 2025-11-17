@@ -65,7 +65,6 @@ const SingleBlog = () => {
           {blog.content}
         </section>
 
-        {/* دسکتاپ */}
         <footer className="hidden sm:flex flex-row sm:items-center sm:justify-between gap-4 pt-4 border-t border-gray-200">
           <div className="flex justify-start items-center gap-4">
             <ReactionButton blog={blog} />
@@ -89,7 +88,6 @@ const SingleBlog = () => {
           </div>
         </footer>
 
-        {/* موبایل */}
         <footer className="flex flex-col sm:hidden gap-2 pt-4 border-t border-gray-200">
           <div className="flex justify-center gap-2">
             <ReactionButton blog={blog} />
@@ -113,7 +111,6 @@ const SingleBlog = () => {
           </div>
         </footer>
 
-        {/* Modal تایید حذف */}
         {showConfirm && (
           <div className="fixed inset-0 flex items-center justify-center z-50 bg-black/50">
             <div className="bg-white rounded-lg p-6 max-w-sm w-full shadow-lg text-center">

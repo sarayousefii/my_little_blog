@@ -18,10 +18,8 @@ const BlogCard = ({ blog, onDelete }) => {
 
   return (
     <article className="group bg-white rounded-2xl shadow-md overflow-hidden m-4 transition-transform duration-300 hover:scale-[1.01] flex flex-col sm:flex-row relative">
-      {/* overlay hover دسکتاپ */}
       <div className="hidden sm:block absolute inset-0 bg-black/0 group-hover:bg-black/25 transition-all duration-500 z-10 rounded-2xl pointer-events-none"></div>
 
-      {/* تصویر */}
       <div className="sm:w-1/3 overflow-hidden relative">
         <img
           src={blog.image || DEFAULT_IMAGE}
@@ -30,7 +28,6 @@ const BlogCard = ({ blog, onDelete }) => {
         />
       </div>
 
-      {/* محتوا */}
       <div className="sm:w-2/3 p-4 flex flex-col gap-3 relative z-20">
         <h3 className="text-xl sm:text-2xl font-semibold truncate">{blog.title}</h3>
         <div className="flex flex-wrap items-center text-sm sm:text-base text-gray-500 gap-2">
@@ -38,12 +35,9 @@ const BlogCard = ({ blog, onDelete }) => {
         </div>
         <p className="text-gray-700 line-clamp-1 sm:line-clamp-3 text-sm sm:text-base">{blog.content}</p>
 
-        {/* دسکتاپ: ReactionButton همیشه ظاهر، بقیه دکمه‌ها staggered */}
         <div className="hidden sm:flex justify-center items-center gap-3 mt-auto absolute bottom-4 left-1/2 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-20">
-          {/* ReactionButton بدون تغییر */}
           <ReactionButton blog={blog} />
 
-          {/* دکمه‌های دیگر staggered */}
           <div className="transition-transform duration-300 delay-100 transform translate-y-4 group-hover:translate-y-0">
             <Link
               to={`/blogs/${blog.id}`}
@@ -73,7 +67,6 @@ const BlogCard = ({ blog, onDelete }) => {
           </div>
         </div>
 
-        {/* موبایل */}
         <div className="flex sm:hidden justify-center items-center gap-1 mt-3">
           <ReactionButton blog={blog} small />
           <Link
@@ -100,7 +93,6 @@ const BlogCard = ({ blog, onDelete }) => {
         </div>
       </div>
 
-      {/* Modal تایید حذف */}
       {showConfirm && (
         <div className="fixed inset-0 flex items-center justify-center z-50 bg-black/50">
           <div className="bg-white rounded-lg p-6 max-w-sm w-full shadow-lg text-center">

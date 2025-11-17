@@ -21,7 +21,7 @@ const CreateBlogForm = () => {
   const users = useSelector(selectAllUsers);
   const [addNewBlog, { isLoading }] = useAddNewBlogMutation();
   const [imageFile, setImageFile] = useState(null);
-  const [preview, setPreview] = useState(null); // ابتدا هیچ پیش‌نمایشی نیست
+  const [preview, setPreview] = useState(null); 
 
   useEffect(() => {
     if (imageFile) {
@@ -29,7 +29,7 @@ const CreateBlogForm = () => {
       setPreview(objectUrl);
       return () => URL.revokeObjectURL(objectUrl);
     } else {
-      setPreview(null); // وقتی فایلی انتخاب نشده است، پیش‌نمایش پاک شود
+      setPreview(null); 
     }
   }, [imageFile]);
 
@@ -70,7 +70,6 @@ const CreateBlogForm = () => {
       >
         {({ isValid, dirty }) => (
           <Form className="space-y-5">
-            {/* عنوان */}
             <div>
               <label className="block text-gray-700 mb-2">عنوان پست :</label>
               <Field
@@ -82,7 +81,6 @@ const CreateBlogForm = () => {
               <ErrorMessage name="title" component="div" className="text-red-500 text-sm mt-1" />
             </div>
 
-            {/* نویسنده */}
             <div>
               <label className="block text-gray-700 mb-2">نویسنده :</label>
               <Field
@@ -100,7 +98,6 @@ const CreateBlogForm = () => {
               <ErrorMessage name="userId" component="div" className="text-red-500 text-sm mt-1" />
             </div>
 
-            {/* محتوا */}
             <div>
               <label className="block text-gray-700 mb-2">محتوای اصلی :</label>
               <Field
@@ -113,7 +110,6 @@ const CreateBlogForm = () => {
               <ErrorMessage name="content" component="div" className="text-red-500 text-sm mt-1" />
             </div>
 
-            {/* عکس */}
             <div>
               <label className="block text-gray-700 mb-2">تصویر پست :</label>
               <input
