@@ -1,4 +1,3 @@
-import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
@@ -6,7 +5,6 @@ import { useAddNewBlogMutation } from "../api/apiSlice";
 import { selectAllUsers } from "../reducers/userSlice";
 import { useState, useEffect } from "react";
 import { nanoid } from "@reduxjs/toolkit";
-import BackButton from "./BackButton";
 
 const convertToBase64 = (file) =>
   new Promise((resolve, reject) => {
@@ -16,21 +14,17 @@ const convertToBase64 = (file) =>
     reader.onerror = (error) => reject(error);
   });
 
-const CreateBlogForm = () => {
-  const navigate = useNavigate();
+const CreateBlogForm = ({ onClose }) => {
   const users = useSelector(selectAllUsers);
   const [addNewBlog, { isLoading }] = useAddNewBlogMutation();
   const [imageFile, setImageFile] = useState(null);
-  const [preview, setPreview] = useState(null); 
+  const [preview, setPreview] = useState(null);
 
   useEffect(() => {
-    if (imageFile) {
-      const objectUrl = URL.createObjectURL(imageFile);
-      setPreview(objectUrl);
-      return () => URL.revokeObjectURL(objectUrl);
-    } else {
-      setPreview(null); 
-    }
+    if (!imageFile) return setPreview(null);
+    const objectUrl = URL.createObjectURL(imageFile);
+    setPreview(objectUrl);
+    return () => URL.revokeObjectURL(objectUrl);
   }, [imageFile]);
 
   const validationSchema = Yup.object({
@@ -41,7 +35,6 @@ const CreateBlogForm = () => {
 
   const handleSubmit = async (values, { resetForm }) => {
     const base64Image = imageFile ? await convertToBase64(imageFile) : null;
-
     await addNewBlog({
       id: nanoid(),
       date: new Date().toISOString(),
@@ -51,97 +44,87 @@ const CreateBlogForm = () => {
       image: base64Image,
       reactions: { thumbsUp: 0, hooray: 0, heart: 0, rocket: 0, eyes: 0 },
     }).unwrap();
-
     resetForm();
     setImageFile(null);
-    navigate("/");
+    onClose?.();
   };
 
+  const inputStyle =
+    "w-full p-3 rounded-xl bg-black/40 backdrop-blur-md placeholder-gray-300 text-white focus:outline-none focus:ring-2 focus:ring-indigo-400 shadow-inner";
+
   return (
-    <section className="max-w-2xl mx-auto mt-10 p-6 bg-white rounded-lg shadow-lg">
-      <BackButton className="mb-4" />
+    <Formik
+      initialValues={{ title: "", content: "", userId: "" }}
+      validationSchema={validationSchema}
+      onSubmit={handleSubmit}
+    >
+      {({ isValid, dirty, setFieldValue }) => (
+        <Form className="flex flex-col gap-5">
+          <Field
+            name="title"
+            type="text"
+            className={inputStyle}
+            placeholder="عنوان پست را وارد کنید..."
+          />
+          <ErrorMessage name="title" component="div" className="text-red-400 text-sm" />
 
-      <h2 className="text-2xl font-bold text-center mb-6 text-gray-800">📝 ساخت پست جدید</h2>
+          <Field as="select" name="userId" className={inputStyle}>
+            <option value="">انتخاب نویسنده</option>
+            {users.map((user) => (
+              <option key={user.id} value={user.id}>
+                {user.fullname}
+              </option>
+            ))}
+          </Field>
+          <ErrorMessage name="userId" component="div" className="text-red-400 text-sm" />
 
-      <Formik
-        initialValues={{ title: "", content: "", userId: "" }}
-        validationSchema={validationSchema}
-        onSubmit={handleSubmit}
-      >
-        {({ isValid, dirty }) => (
-          <Form className="space-y-5">
-            <div>
-              <label className="block text-gray-700 mb-2">عنوان پست :</label>
-              <Field
-                name="title"
-                type="text"
-                className="w-full border rounded-md p-2 focus:ring focus:ring-blue-300"
-                placeholder="عنوان پست را وارد کنید..."
-              />
-              <ErrorMessage name="title" component="div" className="text-red-500 text-sm mt-1" />
-            </div>
+          <Field
+            as="textarea"
+            name="content"
+            rows={6}
+            className={inputStyle}
+            placeholder="متن پست را وارد کنید..."
+          />
+          <ErrorMessage name="content" component="div" className="text-red-400 text-sm" />
 
-            <div>
-              <label className="block text-gray-700 mb-2">نویسنده :</label>
-              <Field
-                as="select"
-                name="userId"
-                className="w-full border rounded-md p-2 bg-white focus:ring focus:ring-blue-300"
-              >
-                <option value="">انتخاب نویسنده</option>
-                {users.map((user) => (
-                  <option key={user.id} value={user.id}>
-                    {user.fullname}
-                  </option>
-                ))}
-              </Field>
-              <ErrorMessage name="userId" component="div" className="text-red-500 text-sm mt-1" />
-            </div>
-
-            <div>
-              <label className="block text-gray-700 mb-2">محتوای اصلی :</label>
-              <Field
-                as="textarea"
-                name="content"
-                rows="6"
-                className="w-full border rounded-md p-2 focus:ring focus:ring-blue-300"
-                placeholder="متن پست را وارد کنید..."
-              />
-              <ErrorMessage name="content" component="div" className="text-red-500 text-sm mt-1" />
-            </div>
-
-            <div>
-              <label className="block text-gray-700 mb-2">تصویر پست :</label>
-              <input
-                type="file"
-                accept="image/*"
-                onChange={(e) => setImageFile(e.target.files[0])}
-                className="w-full border p-2 rounded-md bg-white"
-              />
-              {imageFile && (
+          {/* Upload */}
+          <div className="border-2 border-dashed rounded-xl p-4 text-center cursor-pointer bg-black/40 backdrop-blur-md">
+            <input
+              type="file"
+              accept="image/*"
+              id="fileInput"
+              className="hidden"
+              onChange={(e) => {
+                setFieldValue("image", e.target.files[0]);
+                setImageFile(e.target.files[0]);
+              }}
+            />
+            <label htmlFor="fileInput" className="cursor-pointer text-gray-200">
+              {preview ? (
                 <img
                   src={preview}
-                  alt="preview"
-                  className="w-full h-48 sm:h-64 md:h-80 object-cover mt-3 rounded"
+                  className="w-24 h-24 object-cover rounded-lg mx-auto shadow-md"
                 />
+              ) : (
+                "تصویر را انتخاب کنید یا اینجا کلیک کنید"
               )}
-            </div>
+            </label>
+          </div>
 
-            <button
-              type="submit"
-              disabled={!isValid || !dirty || isLoading}
-              className={`w-full font-semibold py-2 rounded-md transition-colors ${
-                !isValid || !dirty || isLoading
-                  ? "bg-gray-400 cursor-not-allowed text-gray-100"
-                  : "bg-[#403e3e] p-4 hover:bg-[#7b7878] focus:bg-gray-600 text-white"
-              }`}
-            >
-              {isLoading ? "در حال ذخیره..." : "ذخیره پست"}
-            </button>
-          </Form>
-        )}
-      </Formik>
-    </section>
+          <button
+            type="submit"
+            disabled={!isValid || !dirty || isLoading}
+            className={`w-full py-3 rounded-xl font-semibold transition ${
+              !isValid || !dirty || isLoading
+                ? "bg-gray-600 cursor-not-allowed text-gray-400"
+                : "bg-gray-900 hover:bg-gray-800 text-white"
+            }`}
+          >
+            {isLoading ? "در حال ذخیره..." : "ذخیره پست"}
+          </button>
+        </Form>
+      )}
+    </Formik>
   );
 };
 

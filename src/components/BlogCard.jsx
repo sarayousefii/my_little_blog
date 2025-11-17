@@ -1,12 +1,13 @@
+// components/BlogCard.jsx
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import ShowTime from "./ShowTime";
 import ShowUser from "./ShowUser";
 import ReactionButton from "./ReactionButton";
-import { MdEdit, MdDelete, MdRemoveRedEye } from "react-icons/md";
+import { MdRemoveRedEye, MdEdit, MdDelete } from "react-icons/md";
 import DEFAULT_IMAGE from "../assets/default_blog_image.jpg";
 
-const BlogCard = ({ blog, onDelete }) => {
+const BlogCard = ({ blog, onDelete, onEdit }) => {
   const [showConfirm, setShowConfirm] = useState(false);
 
   const handleDeleteClick = () => setShowConfirm(true);
@@ -17,17 +18,20 @@ const BlogCard = ({ blog, onDelete }) => {
   const handleCancelDelete = () => setShowConfirm(false);
 
   return (
-    <article className="group bg-white rounded-2xl shadow-md overflow-hidden m-4 transition-transform duration-300 hover:scale-[1.01] flex flex-col sm:flex-row relative">
-      <div className="hidden sm:block absolute inset-0 bg-black/0 group-hover:bg-black/25 transition-all duration-500 z-10 rounded-2xl pointer-events-none"></div>
-
+    <article className="group bg-white rounded-2xl shadow-md overflow-hidden m-4 transition-transform duration-300 hover:scale-[1.01] hover:bg-gray-300 flex flex-col sm:flex-row relative">
+      
+      {/* تصویر */}
       <div className="sm:w-1/3 overflow-hidden relative">
         <img
           src={blog.image || DEFAULT_IMAGE}
           alt={blog.title}
           className="w-full h-48 sm:h-64 md:h-72 object-cover object-center transition-transform duration-500 group-hover:scale-105"
         />
+        {/* Overlay تیره‌تر هنگام hover */}
+        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-tl-2xl rounded-bl-2xl sm:rounded-l-2xl"></div>
       </div>
 
+      {/* محتوای کارت */}
       <div className="sm:w-2/3 p-4 flex flex-col gap-3 relative z-20">
         <h3 className="text-xl sm:text-2xl font-semibold truncate">{blog.title}</h3>
         <div className="flex flex-wrap items-center text-sm sm:text-base text-gray-500 gap-2">
@@ -35,38 +39,34 @@ const BlogCard = ({ blog, onDelete }) => {
         </div>
         <p className="text-gray-700 line-clamp-1 sm:line-clamp-3 text-sm sm:text-base">{blog.content}</p>
 
-        <div className="hidden sm:flex justify-center items-center gap-3 mt-auto absolute bottom-4 left-1/2 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-20">
-          <ReactionButton blog={blog} />
+        {/* دکمه‌ها فقط هنگام hover */}
+        <div className="hidden sm:flex justify-center items-center gap-3 mt-auto opacity-0 group-hover:opacity-100 transition-all duration-300">
+          <ReactionButton blog={blog} className="transition-transform duration-300 hover:scale-110" />
 
-          <div className="transition-transform duration-300 delay-100 transform translate-y-4 group-hover:translate-y-0">
-            <Link
-              to={`/blogs/${blog.id}`}
-              className="p-3 bg-gray-800 text-white rounded hover:bg-gray-700 transition-transform duration-300 flex items-center justify-center"
-              title="دیدن پست"
-            >
-              <MdRemoveRedEye size={22} />
-            </Link>
-          </div>
-          <div className="transition-transform duration-300 delay-150 transform translate-y-4 group-hover:translate-y-0">
-            <Link
-              to={`/blogs/edit-blog/${blog.id}`}
-              className="p-3 bg-gray-800 text-white rounded hover:bg-gray-700 transition-transform duration-300 flex items-center justify-center"
-              title="ویرایش"
-            >
-              <MdEdit size={22} />
-            </Link>
-          </div>
-          <div className="transition-transform duration-300 delay-200 transform translate-y-4 group-hover:translate-y-0">
-            <button
-              onClick={handleDeleteClick}
-              className="p-3 bg-red-600 text-white rounded hover:bg-red-700 transition-transform duration-300 flex items-center justify-center"
-              title="حذف"
-            >
-              <MdDelete size={22} />
-            </button>
-          </div>
+          <Link
+            to={`/blogs/${blog.id}`}
+            className="p-3 bg-gray-800 text-white rounded hover:bg-gray-700 transition-transform duration-300 transform hover:scale-110 flex items-center justify-center"
+            title="دیدن پست"
+          >
+            <MdRemoveRedEye size={22} />
+          </Link>
+          <button
+            onClick={onEdit}
+            className="p-3 bg-gray-800 text-white rounded hover:bg-gray-700 transition-transform duration-300 transform hover:scale-110 flex items-center justify-center"
+            title="ویرایش"
+          >
+            <MdEdit size={22} />
+          </button>
+          <button
+            onClick={handleDeleteClick}
+            className="p-3 bg-red-600 text-white rounded hover:bg-red-700 transition-transform duration-300 transform hover:scale-110 flex items-center justify-center"
+            title="حذف"
+          >
+            <MdDelete size={22} />
+          </button>
         </div>
 
+        {/* دکمه‌ها برای موبایل همیشه نمایش داده می‌شوند */}
         <div className="flex sm:hidden justify-center items-center gap-1 mt-3">
           <ReactionButton blog={blog} small />
           <Link
@@ -76,13 +76,13 @@ const BlogCard = ({ blog, onDelete }) => {
           >
             <MdRemoveRedEye size={16} />
           </Link>
-          <Link
-            to={`/blogs/edit-blog/${blog.id}`}
+          <button
+            onClick={onEdit}
             className="flex justify-center items-center p-1 bg-gray-800 text-white rounded hover:bg-gray-700 transition-transform duration-300 transform hover:scale-110"
             title="ویرایش"
           >
             <MdEdit size={16} />
-          </Link>
+          </button>
           <button
             onClick={handleDeleteClick}
             className="flex justify-center items-center p-1 bg-red-600 text-white rounded hover:bg-red-700 transition-transform duration-300 transform hover:scale-110"
@@ -93,6 +93,7 @@ const BlogCard = ({ blog, onDelete }) => {
         </div>
       </div>
 
+      {/* تایید حذف */}
       {showConfirm && (
         <div className="fixed inset-0 flex items-center justify-center z-50 bg-black/50">
           <div className="bg-white rounded-lg p-6 max-w-sm w-full shadow-lg text-center">

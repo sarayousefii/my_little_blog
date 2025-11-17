@@ -8,4 +8,7 @@ export default {
     extend: {},
   },
   plugins: [],
+  boxShadow: {
+    neu: "8px 8px 16px #d1d9e6, -8px -8px 16px #ffffff",
+  }
 }
