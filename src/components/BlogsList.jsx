@@ -47,12 +47,10 @@ const BlogsList = () => {
 
       {content}
 
-      {/* Create Modal */}
       <Modal isOpen={showCreate} onClose={() => setShowCreate(false)} title="📝 ساخت پست جدید">
         <CreateBlogForm onClose={() => setShowCreate(false)} />
       </Modal>
 
-      {/* Edit Modal */}
       <Modal
         isOpen={!!editBlogId}
         onClose={() => setEditBlogId(null)}

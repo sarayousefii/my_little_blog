@@ -60,7 +60,6 @@ const EditBlogForm = ({ blogId, onClose }) => {
           <Field as="textarea" name="content" rows={6} className={inputStyle} />
           <ErrorMessage name="content" component="div" className="text-red-400 text-sm" />
 
-          {/* Upload */}
           <div className="border-2 border-dashed rounded-xl p-4 text-center cursor-pointer bg-black/40 backdrop-blur-md">
             <input
               type="file"
