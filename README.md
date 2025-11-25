@@ -1,32 +1,38 @@
 # My Little Blog
 
-[Live Demo](https://sarayousefii.github.io/my_little_blog)
-
-## Overview
-
-**My Little Blog** is a modern React & Redux-based blogging application.  
-It allows users to create, edit, and view blog posts with interactive features like reactions. The project is styled using **TailwindCSS** and includes **modals, spinners, and responsive UI components**.
+A modern blogging platform built with React and Redux Toolkit, featuring user interactions, responsive design, and live deployment. The project includes testing, CI/CD, and TailwindCSS for styling.
 
 ## Features
 
 - Create, edit, and delete blog posts
-- Interactive reaction buttons (like, love, etc.)
-- Responsive and modern UI with TailwindCSS
-- Spinner component with animation for loading states
-- Modal component for confirmations and forms
-- Client-side routing with React Router
-- Redux Toolkit for state management
-- Mock API support for testing
+- React-based frontend with Redux Toolkit for state management
+- User reactions with real-time UI updates
+- Responsive design using TailwindCSS
+- Reusable modal component
+- Spinner for loading states
+- Form validation for blog creation and editing
+- Routing with React Router
+- Jest and React Testing Library for component testing
+- GitHub Actions CI/CD workflow
+
+## Technologies / Stack
+
+- **Frontend:** React 18, Redux Toolkit, React Router, TailwindCSS  
+- **Testing:** Jest, React Testing Library  
+- **CI/CD:** GitHub Actions  
+- **Deployment:** GitHub Pages
 
 ## Installation
 
 1. Clone the repository:
-
 ```bash
 git clone https://github.com/sarayousefii/my_little_blog.git
+
 cd my_little_blog
 
 npm install
+
 npm run dev
+
 npm test
 
