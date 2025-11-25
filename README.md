@@ -27,12 +27,29 @@ A modern blogging platform built with React and Redux Toolkit, featuring user in
 1. Clone the repository:
 ```bash
 git clone https://github.com/sarayousefii/my_little_blog.git
+```
 
+2. Navigate to the project folder:
+
+```bash
 cd my_little_blog
+```
 
+3. Install dependencies:
+
+```bash
 npm install
+```
 
+4. Start the development server:
+
+```bash
 npm run dev
+```
 
-npm test
+5. Build for production:
+
+```bash
+npm run build
+```
 
