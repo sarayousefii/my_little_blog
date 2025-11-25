@@ -1,53 +1,57 @@
-import { createSlice, createSelector,createAsyncThunk,createEntityAdapter } from "@reduxjs/toolkit";
+import { createSelector, createEntityAdapter } from "@reduxjs/toolkit";
 import { apiSlice } from "../api/apiSlice";
 
-const userAdapter=createEntityAdapter();
+const userAdapter = createEntityAdapter();
 
-const initialState=userAdapter.getInitialState()
+const initialState = userAdapter.getInitialState();
 
-export const extendApiSlice=apiSlice.injectEndpoints({
-    endpoints:(builder)=>({
-        getUsers:builder.query({
-            query:() => "/users",
-            transformResponse:responseData=>{
-                return userAdapter.setAll(initialState,responseData);
-            },
-            providesTags:["USER"]
-        }),
-        addNewUser:builder.mutation({
-            query:(initialUser)=>({
-                url: "/users",
-                method:"POST",
-                body:initialUser
-            }),
-            invalidatesTags:["USER"]
-        }),
-        deleteUser:builder.mutation({
-            query:userId=>({
-                url:"/users/"+userId,
-                method:"DELETE"
-            }),
-            invalidatesTags:["USER"]
-        })
-    })
-})
-export const selectUsersResult=extendApiSlice.endpoints.getUsers.select();
+export const userApi = apiSlice.injectEndpoints({
+  endpoints: (builder) => ({
+    getUsers: builder.query({
+      query: () => "/users",
+      transformResponse: (responseData) => {
+        // تبدیل آرایه به EntityState (ids, entities)
+        return userAdapter.setAll(initialState, responseData);
+      },
+      providesTags: ["USER"],
+    }),
 
-const selectUsersData =createSelector(selectUsersResult,(userResult)=>userResult.data);
+    addNewUser: builder.mutation({
+      query: (initialUser) => ({
+        url: "/users",
+        method: "POST",
+        body: initialUser,
+      }),
+      invalidatesTags: ["USER"],
+    }),
 
-const usersSlice = createSlice({
-    name: "users",
-    initialState,
-    reducers: {},
-
+    deleteUser: builder.mutation({
+      query: (userId) => ({
+        url: `/users/${userId}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["USER"],
+    }),
+  }),
 });
 
-export const{
-    selectAll : selectAllUsers,
-    selectById :selectUserById,
-    selectIds : selectUserIds
-}=userAdapter.getSelectors((state)=>selectUsersData(state) ?? initialState);
+// ----------- Selectors -----------
+export const selectUsersResult = userApi.endpoints.getUsers.select();
 
-export const{useAddNewUserMutation,useDeleteUserMutation,useGetUsersQuery}=extendApiSlice;
+const selectUsersData = createSelector(
+  selectUsersResult,
+  (usersResult) => usersResult.data ?? initialState
+);
 
-export default usersSlice.reducer;
+// Entity Adapter Selectors
+export const {
+  selectAll: selectAllUsers,
+  selectById: selectUserById,
+  selectIds: selectUserIds,
+} = userAdapter.getSelectors((state) => selectUsersData(state));
+
+export const {
+  useGetUsersQuery,
+  useAddNewUserMutation,
+  useDeleteUserMutation,
+} = userApi;

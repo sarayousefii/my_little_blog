@@ -1,5 +1,4 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-console.log(import.meta.env.MODE)
 export const apiSlice = createApi({
     reducerPath: "api", 
     baseQuery: fetchBaseQuery({ baseUrl: import.meta.env.MODE === "development"
