@@ -1,25 +1,32 @@
 # My Little Blog
 
-A small blog application built with **React** and **Vite**, created as a portfolio project to showcase frontend skills and practice modern web development.
+[Live Demo](https://sarayousefii.github.io/my_little_blog)
 
-## 🛠 Technologies
-- **React** – UI library
-- **Vite** – Fast and modern build tool
-- **TailwindCSS** – Utility-first CSS framework for styling
-- **Redux Toolkit** – State management
-- **React Router** – Client-side routing
+## Overview
 
-## 🚀 Features
+**My Little Blog** is a modern React & Redux-based blogging application.  
+It allows users to create, edit, and view blog posts with interactive features like reactions. The project is styled using **TailwindCSS** and includes **modals, spinners, and responsive UI components**.
+
+## Features
+
 - Create, edit, and delete blog posts
-- List all posts dynamically
-- Responsive design with TailwindCSS
-- Simple and smooth user experience
+- Interactive reaction buttons (like, love, etc.)
+- Responsive and modern UI with TailwindCSS
+- Spinner component with animation for loading states
+- Modal component for confirmations and forms
+- Client-side routing with React Router
+- Redux Toolkit for state management
+- Mock API support for testing
 
-## 💻 Local Setup
-Clone the repository, install dependencies, and run the development server:
+## Installation
+
+1. Clone the repository:
 
 ```bash
 git clone https://github.com/sarayousefii/my_little_blog.git
 cd my_little_blog
+
 npm install
 npm run dev
+npm test
+
